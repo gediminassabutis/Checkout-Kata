@@ -1,0 +1,5 @@
+<Solution>
+  <Project Path="Checkout-Kata/Checkout-Kata.csproj" />
+  <Project Path="CheckoutLogic.Tests/CheckoutLogic.Tests.csproj" />
+  <Project Path="CheckoutLogic/CheckoutLogic.csproj" />
+</Solution>
