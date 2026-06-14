@@ -11,6 +11,9 @@ public class Checkout(IOfferRepository offersRepository, IProductRepository prod
 
     public decimal GetTotalPrice()
     {
+        //reset IsPartOfOffer flag.
+        _basket.ForEach(b => b.IsPartOfOffer = false);
+
         _basket = [.. _basket.OrderBy(b => b.Product.SKU)];
 
         List<Offer> offers = offersRepository.GetOffers();
