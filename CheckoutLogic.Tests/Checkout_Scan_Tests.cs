@@ -67,18 +67,18 @@ public class Checkout_Scan_Tests
     }
 
     [Fact]
-    public void BOGOF_Promotion_TwoItemsOneFree()
+    public void Promotion_TwoOfferItems()
     {
         Checkout co = CreateCheckout();
 
         co.Scan("B");
         co.Scan("B");
 
-        Assert.Equal(30, co.GetTotalPrice());
+        Assert.Equal(45, co.GetTotalPrice());
     }
 
     [Fact]
-    public void BOGOF_Promotion_OddCountBilling()
+    public void Promotion_OddCountBilling()
     {
         Checkout co = CreateCheckout();
 
@@ -86,7 +86,7 @@ public class Checkout_Scan_Tests
         co.Scan("B");
         co.Scan("B");
 
-        Assert.Equal(60, co.GetTotalPrice());
+        Assert.Equal(75, co.GetTotalPrice());
     }
 
     [Fact]
@@ -100,7 +100,7 @@ public class Checkout_Scan_Tests
         co.Scan("B");
         co.Scan("B");
 
-        Assert.Equal(160, co.GetTotalPrice());
+        Assert.Equal(175, co.GetTotalPrice());
     }
 
     private static Checkout CreateCheckout()
