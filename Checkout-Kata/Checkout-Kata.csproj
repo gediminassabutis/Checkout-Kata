@@ -9,8 +9,8 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\CheckoutLogic\CheckoutLogic.csproj" />
-    <ProjectReference Include="..\Repository\Repository.csproj" />
+    <ProjectReference Include="..\Checkout\CheckoutLogic\CheckoutLogic.csproj" />
+    <ProjectReference Include="..\Repositories\Repository\Repository.csproj" />
   </ItemGroup>
 
 </Project>

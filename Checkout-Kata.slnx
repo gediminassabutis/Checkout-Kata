@@ -1,11 +1,11 @@
 <Solution>
   <Folder Name="/Checkout/">
-    <Project Path="CheckoutLogic.Tests/CheckoutLogic.Tests.csproj" />
-    <Project Path="CheckoutLogic/CheckoutLogic.csproj" />
+    <Project Path="Checkout/CheckoutLogic.Tests/CheckoutLogic.Tests.csproj" />
+    <Project Path="Checkout/CheckoutLogic/CheckoutLogic.csproj" />
   </Folder>
   <Folder Name="/Repositories/">
-    <Project Path="Repository.Tests/Repository.Tests.csproj" Id="ca74d481-c21d-4c3c-bf81-d1ab3593077d" />
-    <Project Path="Repository/Repository.csproj" Id="68d1c067-f1e2-4cb9-af52-11ef5ec9946f" />
+    <Project Path="Repositories/Repository.Tests/Repository.Tests.csproj" />
+    <Project Path="Repositories/Repository/Repository.csproj" />
   </Folder>
   <Project Path="Checkout-Kata/Checkout-Kata.csproj" />
 </Solution>
