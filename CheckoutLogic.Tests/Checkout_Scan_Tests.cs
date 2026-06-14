@@ -1,13 +1,45 @@
-﻿namespace CheckoutLogic.Tests;
+﻿using Moq;
+using Repository.Models;
+using Repository.OffersRepository;
+using Repository.ProductsRepository;
 
-public class Checkout_Scan_Tests
+namespace CheckoutLogic.Tests;
+
+public class Checkout_Scan_Tests : IDisposable
 {
+    private readonly Checkout _checkout;
+
+    public Checkout_Scan_Tests()
+    {
+        Mock<IProductRepository> productRepositoryMock = new();
+        Mock<IOfferRepository> offersRepositoryMock = new();
+
+        productRepositoryMock
+            .Setup(p => p.GetProducts())
+            .Returns(new Dictionary<string, Product>
+            {
+                { "A", new Product("A", 50) },
+                { "B", new Product("B", 30) },
+                { "C", new Product("C", 20) },
+                { "D", new Product("D", 15) }
+            });
+
+        offersRepositoryMock
+            .Setup(o => o.GetOffers())
+            .Returns(
+            [
+                new Offer("A", 3, 130),
+                new Offer("B", 2, 45)
+            ]);
+
+        _checkout = new Checkout(offersRepositoryMock.Object, productRepositoryMock.Object);
+    }
+
     [Fact]
     public void Scan_SingleItem_ReturnsItemPrice()
     {
-        Checkout co = CreateCheckout();
-        co.Scan("A");
-        Assert.Equal(50, co.GetTotalPrice());
+        _checkout.Scan("A");
+        Assert.Equal(50, _checkout.GetTotalPrice());
     }
 
     [Theory]
@@ -16,110 +48,94 @@ public class Checkout_Scan_Tests
     [InlineData(new string[] { "A", "B", "C", "D" }, 115)]
     public void Scan_MultipleDifferentItems_ReturnsSumOfPrices(string[] items, decimal expectedTotal)
     {
-        Checkout co = CreateCheckout();
-
         for (int i = 0; i < items.Length; i++)
         {
-            co.Scan(items[i]);
+            _checkout.Scan(items[i]);
         }
 
-        Assert.Equal(expectedTotal, co.GetTotalPrice());
+        Assert.Equal(expectedTotal, _checkout.GetTotalPrice());
     }
 
     [Fact]
     public void Scan_EmptyCheckout_TotalIsZero()
     {
-        Checkout co = CreateCheckout();
-        Assert.Equal(0, co.GetTotalPrice());
+        Assert.Equal(0, _checkout.GetTotalPrice());
     }
 
     [Fact]
     public void Scan_UnknownSKU_ThrowsArgumentException()
     {
-        Checkout co = CreateCheckout();
-
-        Assert.Throws<ArgumentException>(() => co.Scan("Z"));
+        Assert.Throws<ArgumentException>(() => _checkout.Scan("Z"));
     }
 
     [Fact]
     public void BulkDiscount_AppliesWhenThresholdReached()
     {
-        Checkout co = CreateCheckout();
+        _checkout.Scan("A");
+        _checkout.Scan("A");
+        _checkout.Scan("A");
 
-        co.Scan("A");
-        co.Scan("A");
-        co.Scan("A");
-
-        Assert.Equal(130, co.GetTotalPrice());
+        Assert.Equal(130, _checkout.GetTotalPrice());
     }
 
     [Fact]
     public void BulkDiscount_PartialGroupChargedAtUnitPrice()
     {
-        Checkout co = CreateCheckout();
+        _checkout.Scan("A");
+        _checkout.Scan("A");
+        _checkout.Scan("A");
+        _checkout.Scan("A");
 
-        co.Scan("A");
-        co.Scan("A");
-        co.Scan("A");
-        co.Scan("A");
-
-        Assert.Equal(180, co.GetTotalPrice());
+        Assert.Equal(180, _checkout.GetTotalPrice());
     }
 
     [Fact]
     public void Promotion_TwoOfferItems()
     {
-        Checkout co = CreateCheckout();
+        _checkout.Scan("B");
+        _checkout.Scan("B");
 
-        co.Scan("B");
-        co.Scan("B");
-
-        Assert.Equal(45, co.GetTotalPrice());
+        Assert.Equal(45, _checkout.GetTotalPrice());
     }
 
     [Fact]
     public void Promotion_OddCountBilling()
     {
-        Checkout co = CreateCheckout();
+        _checkout.Scan("B");
+        _checkout.Scan("B");
+        _checkout.Scan("B");
 
-        co.Scan("B");
-        co.Scan("B");
-        co.Scan("B");
-
-        Assert.Equal(75, co.GetTotalPrice());
+        Assert.Equal(75, _checkout.GetTotalPrice());
     }
 
     [Fact]
     public void Combine_Promotions_AppliedCorrectly()
     {
-        Checkout co = CreateCheckout();
+        _checkout.Scan("A");
+        _checkout.Scan("A");
+        _checkout.Scan("A");
+        _checkout.Scan("B");
+        _checkout.Scan("B");
 
-        co.Scan("A");
-        co.Scan("A");
-        co.Scan("A");
-        co.Scan("B");
-        co.Scan("B");
-
-        Assert.Equal(175, co.GetTotalPrice());
+        Assert.Equal(175, _checkout.GetTotalPrice());
     }
 
     [Fact]
     public void BulkDiscount_Multiple_SameProduct_Offers()
     {
-        Checkout co = CreateCheckout();
+        _checkout.Scan("A");
+        _checkout.Scan("A");
+        _checkout.Scan("A");
+        _checkout.Scan("A");
+        _checkout.Scan("A");
+        _checkout.Scan("A");
 
-        co.Scan("A");
-        co.Scan("A");
-        co.Scan("A");
-        co.Scan("A");
-        co.Scan("A");
-        co.Scan("A");
-
-        Assert.Equal(260, co.GetTotalPrice());
+        Assert.Equal(260, _checkout.GetTotalPrice());
     }
 
-    private static Checkout CreateCheckout()
+    public void Dispose()
     {
-        return new Checkout();
+        //clear the basket after each test to ensure isolation
+        _checkout.ClearBasket();
     }
 }

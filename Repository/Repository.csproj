@@ -6,8 +6,8 @@
     <Nullable>enable</Nullable>
   </PropertyGroup>
 
-  <ItemGroup>
-    <ProjectReference Include="..\Repository\Repository.csproj" />
-  </ItemGroup>
+	<ItemGroup>
+		<InternalsVisibleTo Include="Repository.Tests" />
+	</ItemGroup>
 
 </Project>

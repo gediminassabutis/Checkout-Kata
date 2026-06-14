@@ -1,5 +1,4 @@
-﻿
-namespace CheckoutLogic.Models;
+﻿namespace Repository.Models;
 
 public class Product(string SKU, decimal UnitPrice)
 {

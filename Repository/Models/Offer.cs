@@ -1,4 +1,4 @@
-﻿namespace CheckoutLogic.Models;
+﻿namespace Repository.Models;
 
 public class Offer(string SKU, int Count, decimal Price)
 {

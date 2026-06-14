@@ -1,4 +1,6 @@
-﻿namespace CheckoutLogic.Models;
+﻿using Repository.Models;
+
+namespace CheckoutLogic.Models;
 
 internal class BasketItem(int Id, Product product)
 {

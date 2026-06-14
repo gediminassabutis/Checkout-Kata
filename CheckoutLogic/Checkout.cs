@@ -1,9 +1,11 @@
 ﻿using CheckoutLogic.Models;
-using CheckoutLogic.Repository;
+using Repository.Models;
+using Repository.OffersRepository;
+using Repository.ProductsRepository;
 
 namespace CheckoutLogic;
 
-public class Checkout : ICheckout
+public class Checkout(IOfferRepository offersRepository, IProductRepository productRepository) : ICheckout
 {
     internal List<BasketItem> _basket = [];
 
@@ -11,9 +13,11 @@ public class Checkout : ICheckout
     {
         _basket = [.. _basket.OrderBy(b => b.Product.SKU)];
 
+        List<Offer> offers = offersRepository.GetOffers();
+
         List<string> uniqueProductsInBasket = [.. _basket.GroupBy(p => p.Product.SKU).Select(g => g.Key)];
 
-        List<Offer> availableOffers = [.. Offers.ProductOffers.Where(o => uniqueProductsInBasket.Contains(o.SKU))];
+        List<Offer> availableOffers = [.. offers.Where(o => uniqueProductsInBasket.Contains(o.SKU))];
 
         decimal totalPrice = 0;
 
@@ -40,12 +44,19 @@ public class Checkout : ICheckout
 
     public void Scan(string item)
     {
-        if (!Products.ProductPrices.TryGetValue(item, out Product? value))
+        Dictionary<string, Product> products = productRepository.GetProducts();
+
+        if (!products.TryGetValue(item, out Product? value))
         {
             throw new ArgumentException($"Unknown SKU: {item}");
         }
 
         _basket.Add(new BasketItem(_basket.Count + 1, value));
+    }
+
+    public void ClearBasket()
+    {
+        _basket.Clear();
     }
 
     private bool TryApplyOffer(Offer offer)
