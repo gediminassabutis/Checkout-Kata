@@ -103,6 +103,21 @@ public class Checkout_Scan_Tests
         Assert.Equal(175, co.GetTotalPrice());
     }
 
+    [Fact]
+    public void BulkDiscount_Multiple_SameProduct_Offers()
+    {
+        Checkout co = CreateCheckout();
+
+        co.Scan("A");
+        co.Scan("A");
+        co.Scan("A");
+        co.Scan("A");
+        co.Scan("A");
+        co.Scan("A");
+
+        Assert.Equal(260, co.GetTotalPrice());
+    }
+
     private static Checkout CreateCheckout()
     {
         return new Checkout();
