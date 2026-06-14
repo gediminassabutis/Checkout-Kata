@@ -7,9 +7,9 @@ public class Checkout : ICheckout
 {
     internal List<Product> _basket = [];
 
-    public int GetTotalPrice()
+    public decimal GetTotalPrice()
     {
-        throw new NotImplementedException();
+        return _basket.Sum(b => b.UnitPrice);
     }
 
     public void Scan(string item)

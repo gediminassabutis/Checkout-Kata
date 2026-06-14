@@ -14,7 +14,7 @@ public class Checkout_Scan_Tests
     [InlineData(new string[] { "A", "B" }, 80)]
     [InlineData(new string[] { "A", "B", "C" }, 100)]
     [InlineData(new string[] { "A", "B", "C", "D" }, 115)]
-    public void Scan_MultipleDifferentItems_ReturnsSumOfPrices(string[] items, double expectedTotal)
+    public void Scan_MultipleDifferentItems_ReturnsSumOfPrices(string[] items, decimal expectedTotal)
     {
         Checkout co = CreateCheckout();
 
