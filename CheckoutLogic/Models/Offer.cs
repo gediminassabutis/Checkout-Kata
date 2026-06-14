@@ -1,8 +1,8 @@
 ﻿namespace CheckoutLogic.Models;
 
-public class Offer
+public class Offer(string SKU, int Count, decimal Price)
 {
-    public required string SKU { get; set; }
-    public int Count { get; set; }
-    public double Price { get; set; }
+    public string SKU { get; } = SKU;
+    public int Count { get; } = Count;
+    public decimal Price { get; } = Price;
 }
